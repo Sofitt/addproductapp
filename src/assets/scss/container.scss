@@ -1,0 +1,21 @@
+@import "style";
+
+.__container {
+  max-width: $maxWidthContainer + px;
+  margin: 0 auto;
+  padding: 0 32px 0 32px;
+  @include transitionAll();
+  @media (max-width: $md1+px) {
+    max-width: 100%;
+    @include transitionAll();
+  }
+  @media (max-width: $md2+px) {
+    max-width: 1050px;
+    @include transitionAll();
+  }
+  @media (max-width: $md3+px) {
+    max-width: none;
+    padding: 0;
+    @include transitionAll();
+  }
+}

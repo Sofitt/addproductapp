@@ -1,0 +1,53 @@
+@import "icon";
+
+.signUp {
+  display: flex;
+  flex-shrink: 1;
+  min-width: 70px;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 102px !important;
+  height: 40px;
+  border: 1px solid rgba(33, 40, 50, 1);
+  border-radius: 5px;
+}
+
+.langDropdown {
+  display: flex;
+  flex-flow: row !important;
+  background: 0;
+  padding: 0 0px 0 0;
+  max-height: 25px;
+  font-family: 'Open Sans';
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 600 !important;
+  line-height: 23px;
+  letter-spacing: 0em;
+  text-align: left;
+
+  & .arrow {
+    position: relative;
+    top: -3px;
+    left: 8px;
+    margin: 0px 0px 0px 0px;
+    border-width: 0 1px 1px 0;
+    border-color: rgba(33, 40, 50, 1);
+  }
+  &__drop {
+    font-family: 'Open Sans';
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 600 !important;
+    line-height: 23px;
+    letter-spacing: 0em;
+    text-align: left;
+
+    display: flex;
+    align-items: center;
+    background: none;
+
+    position: absolute;
+    top: 30px;
+  }
+}
