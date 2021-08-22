@@ -25,7 +25,7 @@
              oninvalid="this.setCustomValidity(' ')"
              oninput="setCustomValidity('')">
     </label>
-    <button id="submit" class="panel__button" type="submit" @keydown.enter.prevent="isBlank"
+    <button disabled id="submit" class="panel__button" type="submit" @keydown.enter.prevent="isBlank"
             @click.prevent="isBlank; createCard()"
             oninvalid="this.setCustomValidity(' ')" oninput="setCustomValidity('')">
       Добавить товар
@@ -49,9 +49,11 @@ module.exports = {
     isActive: function () {
       const submitButton = document.querySelector('#submit');
       if (this.inputs[0].value.length && this.inputs[1].value.length && this.inputs[2].value.length) {
-        submitButton.classList.add('__active');
+        submitButton.disabled = false;
+        // submitButton.classList.add('__active');
       } else {
-        submitButton.classList.remove('__active');
+        submitButton.disabled = true;
+        // submitButton.classList.remove('__active');
       }
     },
     /**
@@ -80,11 +82,16 @@ module.exports = {
       let cost = document.getElementById('cost');
       cost.value = value;
     },
+    /**
+     * Создаёт карточку товара, заполняя информацией из инпутов
+     */
     createCard: function () {
+      const submitButton = document.querySelector('#submit');
+
       let desc = document.querySelector('.textarea');
       const name = this.inputs[0].value;
 
-      const link = `<img class="product__img" src="` + this.inputs[1].value + `" alt="">`
+      const link = this.inputs[1].value;
       console.log(link);
       const cost = this.inputs[2].value;
       this.cards.push({name: name, desc: desc.value, imgLink: link, cost: cost});
@@ -93,6 +100,8 @@ module.exports = {
       this.inputs[1].value = '';
       this.inputs[2].value = '';
       desc.value = '';
+// Сброс состояния кнопки
+      submitButton.disabled = true;
     },
   },
   mounted: function () {
@@ -167,26 +176,29 @@ module.exports = {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #EEEEEE;
-    color: rgba(180, 180, 180, 1);
     border-radius: 10px;
     height: 36px;
-    cursor: default;
+    //
+    background: rgba(123, 174, 115, 1);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 1);
     @include transitionAll();
 
-    &.__active {
-      background: rgba(123, 174, 115, 1);
-      color: rgba(255, 255, 255, 1);
+    &:hover {
+      background: rgb(88, 153, 77);
+      color: rgb(255, 255, 255);
+
       @include transitionAll();
+    }
 
-      &:hover {
-        background: rgb(88, 153, 77);
-        color: rgb(255, 255, 255);
-        border: 1px solid rgba(180, 180, 180, 1);
-        cursor: pointer;
+    &:disabled, &[disabled] {
+      background: #EEEEEE;
+      color: rgba(180, 180, 180, 1);
+      cursor: default;
+    }
 
-        @include transitionAll();
-      }
+    &.__active {
+
     }
   }
 }

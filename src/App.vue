@@ -32,7 +32,14 @@ export default {
         desc: 'Роскошный кирчик нежно-розового цвета',
         imgLink: 'https://www.zsm-altair.ru/sites/default/files/moskva_krasnyy_loft_razreshenie_obrez.jpg',
         cost: '10 000',
-      }],
+      },
+        {
+          name: 'JS',
+          desc: 'Роскошный JS сочно-жёлтого цвета',
+          imgLink: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/120px-Unofficial_JavaScript_logo_2.svg.png',
+          cost: '100 000',
+        },
+      ],
     }
   },
   watch: {
@@ -53,12 +60,8 @@ export default {
 #app {
   //background: rgba(255, 254, 251, 0.8);
 
-
   .wrapper {
     background: rgba(255, 188, 0, 0.8);
-    //margin: 0 auto;
-    //padding: 0 32px;
-    //width: 1440px;
 
     .product {
       margin: 16px 0px 0px 0px; //b 16px
@@ -130,6 +133,7 @@ export default {
     }
   }
 }
+
 @media (max-width: 844px) {
   #app .wrapper .product__title {
     display: none;
@@ -142,7 +146,7 @@ export default {
     padding: 16px;
     z-index: 100;
     top: -390px;
-    left: 40px;
+    left: 0px;
     box-shadow: none;
     background: rgba(255, 255, 255, 0);
     @include transitionAll();
@@ -154,11 +158,13 @@ export default {
       overflow-y: auto;
       height: 300px;
     }
+
     &:hover > #submit {
       display: block !important;
       transform: translate(0px, 0px) scaleY(1.5);
       height: 42px;
     }
+
     &__button {
       transform: translate(-8px, 28px);
     }
