@@ -5,17 +5,10 @@
         <h1 class="product__title">Добавление товара</h1>
       </header>
       <div class="product__main">
+
         <addPanel :cards="cards"></addPanel>
         <div class="product__list">
-          <productCard></productCard>
-          <productCard></productCard>
-          <productCard></productCard>
-          <productCard></productCard>
-          <productCard></productCard>
-          <productCard></productCard>
-          <productCard></productCard>
-          <productCard></productCard>
-          <productCard></productCard>
+          <productCard :cards="cards" :item="item" :key="item" v-for="item in cards"></productCard>
         </div>
       </div>
 
@@ -37,10 +30,14 @@ export default {
       cards: [{
         name: 'Кирпич',
         desc: 'Роскошный кирчик нежно-розового цвета',
-        link: '<img class="product__img" src="https://www.zsm-altair.ru/sites/default/files/moskva_krasnyy_loft_razreshenie_obrez.jpg" alt="">',
-        // <img class=\"product__img\" src=\"https://www.zsm-altair.ru/sites/default/files/moskva_krasnyy_loft_razreshenie_obrez.jpg\" alt=\"\">
+        imgLink: 'https://www.zsm-altair.ru/sites/default/files/moskva_krasnyy_loft_razreshenie_obrez.jpg',
         cost: '10 000',
       }],
+    }
+  },
+  watch: {
+    cards: function () {
+      console.log('cards', this.cards);
     }
   }
 }

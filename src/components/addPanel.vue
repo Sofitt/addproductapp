@@ -87,7 +87,7 @@ module.exports = {
       const link = `<img class="product__img" src="` + this.inputs[1].value + `" alt="">`
       console.log(link);
       const cost = this.inputs[2].value;
-      this.cards.push({name: name, desc: desc.value, link: link, cost: cost});
+      this.cards.push({name: name, desc: desc.value, imgLink: link, cost: cost});
       console.log(this.cards[1]);
       this.inputs[0].value = '';
       this.inputs[1].value = '';

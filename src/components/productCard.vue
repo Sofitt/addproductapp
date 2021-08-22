@@ -6,22 +6,41 @@
       </button>
     </div>
     <div class="product__info">
-      <img class="product__img" src="../assets/img/default_image.jpg" alt="">
+      <img class="product__img" :src="this.item.imgLink" alt="Изображение товара">
       <div class="product__inner">
-        <h3 class="product__name">Наименование товара</h3>
-        <p class="product__desc">Довольно-таки интересное описание товара в несколько строк. Довольно-таки интересное
-          описание товара в несколько строк</p>
-        <span class="product__cost">10 000 руб.</span>
+        <h3 class="product__name">
+          {{this.item.name}}
+        </h3>
+        <p class="product__desc">
+          {{this.item.desc}}
+
+        </p>
+        <span class="product__cost"><span class="product__cost">
+          {{this.item.cost}}
+
+        </span> руб.</span>
       </div>
     </div>
-
   </div>
 </template>
 <script>
 module.exports = {
   name: 'productCard',
+  props: ['cards', 'item'],
   data: function () {
-    return {}
+    return {
+      counter: 0,
+      img: this.cards[0].imgLink,
+      name: this.cards[0].name,
+      desc: this.cards[0].desc,
+      cost: this.cards[0].cost,
+      // cards: [{
+      //   name: 'Кирпич',
+      //   desc: 'Роскошный кирчик нежно-розового цвета',
+      //   imgLink: '<img class="product__img" src="https://www.zsm-altair.ru/sites/default/files/moskva_krasnyy_loft_razreshenie_obrez.jpg" alt="">',
+      //   cost: '10 000',
+      // }],
+    }
   },
   methods: {
     removeProduct: function (target) {
@@ -31,7 +50,16 @@ module.exports = {
         console.error('EventListener расположен на неправильном элементе или указывает на неверный родитель:')
         console.error(target);
       }
-    }
+    },
+//     imgPut(item) {
+// let imgLocation = document.getElementsByClassName('product__info');
+//       imgLocation.innerHTML += item;
+//       return item.this.imgPut;
+//     }
+  },
+  mounted: function () {
+    console.log('product', this.cards);
+
   }
 }
 </script>
