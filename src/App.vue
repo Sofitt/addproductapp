@@ -3,6 +3,20 @@
     <div class="wrapper __container">
       <header class="product">
         <h1 class="product__title">Добавление товара</h1>
+        <div id="sortList" class="product__sort" @click="showSort = !showSort; expand()">
+          <a class="product__sortBtn __current"><span class="product__sortBtn default">По умолчанию</span><i id="arrow" class="arrow down"></i></a>
+          <span class="product__sortBtn default"
+                v-if="sortType !== 'default'"
+                @click="toSort('default')">По умолчанию</span>
+          <span class="product__sortBtn toMax"
+                :style="isShowSort"
+                v-if="sortType !== 'toMax'"
+                @click="toSort('toMax')">По возрастанию цены</span>
+          <span class="product__sortBtn toMin"
+                :style="isShowSort"
+                v-if="sortType !== 'toMin'"
+                @click="toSort('toMin')">По убыванию цены</span>
+        </div>
       </header>
       <div class="product__main">
 
@@ -40,11 +54,68 @@ export default {
           cost: '100 000',
         },
       ],
+      sortedCards: [],
+      showSort: false,
+      isShowSort: 'display: none',
+      sortType: 'default',
+    }
+  },
+  methods: {
+    expand: function () {
+      const sortList = document.getElementById('sortList');
+      sortList.classList.toggle('__active');
+    },
+    toSort: function (type) {
+      if (type === 'default') {
+        this.sortType = 'default';
+        console.log('def');
+      } else if (type === 'toMax') {
+        this.sortType = 'toMax';
+        console.log('max');
+      } else if (type === 'toMin') {
+        this.sortType = 'toMin';
+        console.log('min');
+      }
     }
   },
   watch: {
     cards: function () {
-      console.log('cards', this.cards);
+      console.log('cards');
+      console.log(this.cards[0]);
+      const parsed = JSON.stringify(this.cards);
+      localStorage.setItem('cards', parsed);
+    },
+    showSort: function (state) {
+      const icon = document.getElementById('arrow');
+      const current = document.querySelector('.__current').childNodes[0];
+      if (state === true) {
+        icon.classList.add('up');
+        icon.classList.remove('down');
+        icon.style.borderColor = 'rgba(63, 63, 63, 1)';
+        icon.style.position = 'relative';
+        icon.style.top = '3px';
+        current.style.color = 'rgba(63, 63, 63, 1)';
+        this.isShowSort = 'display: flex; justify-content: center';
+      } else {
+        icon.classList.add('down');
+        icon.classList.remove('remove');
+        icon.style.borderColor = '';
+        icon.style.position = '';
+        icon.style.top = '';
+        current.style.color = '#B4B4B4';
+        this.isShowSort = 'display: none';
+      }
+    }
+  },
+  mounted() {
+    if (localStorage.getItem('cards')) {
+      try {
+        this.cards = JSON.parse(localStorage.getItem('cards'));
+      } catch (e) {
+        console.error('ERROR localStorage.getItem: ', e);
+        localStorage.removeItem('cards');
+      }
+
     }
   }
 }
@@ -52,74 +123,14 @@ export default {
 </script>
 
 <style lang="scss">
+@import "assets/scss/icon";
+@import "assets/scss/animation";
 @import "assets/scss/style";
 @import "assets/scss/null";
 @import "assets/scss/container";
 @import "assets/scss/before";
 
-#app {
-  //background: rgba(255, 254, 251, 0.8);
 
-  .wrapper {
-    background: rgba(255, 188, 0, 0.8);
-
-    .product {
-      margin: 16px 0px 0px 0px; //b 16px
-      &__title {
-        display: inline-block;
-
-        font-size: 28px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 35px;
-        letter-spacing: 0em;
-        text-align: left;
-      }
-
-      &__main {
-        display: flex;
-        flex-flow: row;
-
-        .panel {
-          margin-top: 16px;
-          position: sticky;
-          top: 24px;
-          // Сообщение об ошибке при заполнении
-          .requireErr {
-            color: #FF8484;
-            margin: 4px 0px 0px 0px;
-            position: absolute;
-            transform: translate(0, 52px);
-            font-size: 8px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 10px;
-            letter-spacing: -0.02em;
-            text-align: left;
-          }
-        }
-      }
-
-      &__list {
-
-        padding-top: 16px;
-        margin: 0px 0px 0px 16px;
-        display: flex;
-        flex-flow: row wrap;
-        //justify-content: flex-end;
-        align-items: flex-start;
-        flex-basis: 100%;
-        //width: 1028px;
-        //height: 825px;
-        //overflow: auto;
-      }
-
-      &Card {
-        margin: 0 16px 16px;
-      }
-    }
-  }
-}
 
 @media (max-width: 1283px) {
   #app {
@@ -143,7 +154,7 @@ export default {
   }
   #app .wrapper .product__main .panel {
     position: absolute !important;
-    padding: 16px;
+    padding: 14px;
     z-index: 100;
     top: -390px;
     left: 0px;
@@ -161,12 +172,31 @@ export default {
 
     &:hover > #submit {
       display: block !important;
-      transform: translate(0px, 0px) scaleY(1.5);
-      height: 42px;
+      transform: translate(0px, 0px);
+      //background: #EEEEEE;
+      //color: rgba(180, 180, 180, 1);
+      min-height: 36px;
+
+      &:hover {
+        background: rgb(88, 153, 77);
+        color: rgb(255, 255, 255);
+
+        @include transitionAll();
+      }
+
+      &:disabled, &[disabled] {
+        background: #EEEEEE;
+        color: rgba(180, 180, 180, 1);
+        cursor: default;
+      }
+
     }
 
     &__button {
       transform: translate(-8px, 28px);
+      background: rgba(123, 174, 115, 1);
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+      color: rgba(255, 255, 255, 1);
     }
   }
 }

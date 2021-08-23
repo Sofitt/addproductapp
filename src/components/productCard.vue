@@ -9,14 +9,14 @@
       <img class="product__img" :src="this.item.imgLink" alt="Изображение товара">
       <div class="product__inner">
         <h3 class="product__name">
-          {{this.item.name}}
+          {{ this.item.name }}
         </h3>
         <p class="product__desc">
-          {{this.item.desc}}
+          {{ this.item.desc }}
 
         </p>
         <span class="product__cost"><span class="product__cost">
-          {{this.item.cost}}
+          {{ this.item.cost }}
 
         </span> руб.</span>
       </div>
@@ -28,24 +28,62 @@ module.exports = {
   name: 'productCard',
   props: ['cards', 'item'],
   data: function () {
-    return {
-
-    }
+    return {}
   },
   methods: {
+    /**
+     * Удаляет объект их массива товаров
+     */
+    removeObj: function() {
+      let arr = this.cards;
+
+      for (let card of this.cards) {
+        if (card.name === this.item.name) { // Можно расширить критерии поиска
+          const index = this.cards.indexOf(card);
+
+          if (index >= 0) {
+            this.cards = arr.splice(index, 1);
+          } else if (index === -1) {
+            console.error('При удалении объекта произошла ошибка! Объект не найден.')
+          }
+          break
+        }
+      }
+
+    },
+    /**
+     * Удаляет товар из списка
+     * @param target
+     */
     removeProduct: function (target) {
       if (target.className === 'product__cardRemove' || target.className === 'remove') {
-        target.parentNode.parentNode.parentNode.remove();
+        const node = target.parentNode.parentNode.parentNode;
+        let width = window.getComputedStyle(node).width;
+        width = width.slice(0,3);
+        const per = width/100*10;
+        const half = width/2;
+            // console.log(width);
+        for (let i = width; i >= 0; i = i - per) {
+          setTimeout(() => {
+            node.style.maxWidth = i + 'px';
+            if (i <= half) {
+              node.childNodes[1].style = 'display: none';
+            }
+            if (i <= half/4) {
+              node.style.marginRight = '0px';
+            }
+          }, 20)
+
+        }
+        setTimeout(() => {
+          this.removeObj();
+          node.remove();
+        }, 300)
+
       } else {
-        console.error('EventListener расположен на неправильном элементе или указывает на неверный родитель:')
-        console.error(target);
+        console.error('EventListener расположен на неправильном элементе или указывает на неверный родитель: ', target)
       }
     },
-//     imgPut(item) {
-// let imgLocation = document.getElementsByClassName('product__info');
-//       imgLocation.innerHTML += item;
-//       return item.this.imgPut;
-//     }
   },
   mounted: function () {
     console.log('product', this.cards);
@@ -66,13 +104,10 @@ module.exports = {
     background: #FFFEFB;
     box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.04), 0px 6px 10px rgba(0, 0, 0, 0.02);
     border-radius: 4px;
-    //cursor: pointer;
     margin-bottom: 16px;
     margin-right: 16px;
+    @include transitionAll();
 
-    //&:nth-child(3n) {
-    //  margin-right: 0;
-    //}
     &:hover {
       transform: translate(0, 0px);
     }
@@ -103,13 +138,12 @@ module.exports = {
 
       & .remove {
         position: relative;
-        //background: rgba(0, 0, 0, 0);
-        //transform: translate(-4px, -2px);
         height: 32px;
         width: 32px;
       }
 
     }
+
     &-action-menu {
       background: rgba(255, 132, 132, 0);
       display: flex;
@@ -121,10 +155,12 @@ module.exports = {
       //justify-content: flex-end;
     }
   }
+
   &__info {
     position: relative;
     transform: translate(0, -32px);
   }
+
   &__img {
     object-fit: contain;
     object-position: top;
@@ -162,6 +198,7 @@ module.exports = {
     letter-spacing: 0em;
     text-align: left;
     margin: 0px 0px 32px 0px;
+    min-height: 90px;
     max-height: 90px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -178,6 +215,7 @@ module.exports = {
 
   }
 }
+
 @media (max-width: 1761px) {
   .product {
     &__card {
@@ -187,6 +225,7 @@ module.exports = {
   }
 
 }
+
 @media (max-width: 1601px) {
   .product {
     &__card {
@@ -198,13 +237,16 @@ module.exports = {
       &:hover > &-action-menu > &Remove {
         transform: translate(190px, 10px);
       }
+
       //&:nth-child(3n) {
       //  margin-right: 16px;
       //}
     }
+
     &__cardRemove {
-      transform: translate(190px,0);
+      transform: translate(190px, 0);
     }
+
     &__img {
       min-height: 0;
       max-width: 100%;
@@ -212,6 +254,7 @@ module.exports = {
     }
   }
 }
+
 @media (max-width: 1397px) {
   .product {
     &__card {
@@ -223,23 +266,28 @@ module.exports = {
         transform: translate(106px, 0);
       }
     }
+
     &__cardRemove {
-      transform: translate(106px,0);
+      transform: translate(106px, 0);
     }
+
     &__img {
       min-height: 0;
       max-width: 100%;
       max-height: 100%;
     }
+
     &__inner {
       //overflow-y: auto;
       max-height: 100%;
     }
+
     &__cost {
       padding-bottom: 0;
     }
   }
 }
+
 @media (max-width: 1283px) {
   .product {
     &__card {
@@ -251,10 +299,11 @@ module.exports = {
       max-height: 155px;
 
       &:hover > &-action-menu > &Remove {
-        transform: translate(580px,118px);
+        transform: translate(580px, 118px);
         width: 50px;
         z-index: 10;
       }
+
       //&:nth-child(3n) {
       //  margin-right: 0px;
       //}
@@ -266,41 +315,50 @@ module.exports = {
         height: 50px;
       }
     }
+
     &__cardRemove {
-      transform: translate(580px,118px);
+      transform: translate(580px, 118px);
       width: 50px;
       z-index: 10;
       background: #ffa8a8;
     }
+
     &__img {
       min-height: 0;
       padding: 0;
       max-width: 22%;
       max-height: 85%;
     }
+
     &__info {
       display: flex;
       padding: 15px 0 0 0;
       width: 100%;
       transform: translate(-32px, 0);
     }
+
     &__inner {
       height: 144px;
       padding: 0 0 0 16px;
     }
+
     &__name {
       margin-bottom: 0;
       font-size: 17px;
     }
+
     &__desc {
       margin-bottom: 0px;
+      min-height: 80px;
       max-height: 80px;
     }
+
     &__cost {
       font-size: 18px;
     }
   }
 }
+
 @media (max-width: 1245px) {
   .product {
     &__card {
@@ -310,9 +368,10 @@ module.exports = {
       height: 155px;
 
       &:hover > &-action-menu > &Remove {
-        transform: translate(480px,118px);
+        transform: translate(480px, 118px);
         width: 50px;
       }
+
       //&:nth-child(3n) {
       //  margin-right: 0px;
       //}
@@ -324,38 +383,46 @@ module.exports = {
         height: 50px;
       }
     }
+
     &__cardRemove {
-      transform: translate(480px,118px);
+      transform: translate(480px, 118px);
       width: 50px;
       z-index: 10;
       background: #ffa8a8;
     }
+
     &__img {
       min-height: 0;
       padding: 0;
       max-width: 22%;
       max-height: 85%;
     }
+
     &__info {
       display: flex;
       padding: 20px 0 0 0;
       width: 100%;
       transform: translate(-32px, 0);
     }
+
     &__inner {
       height: 144px;
     }
+
     &__name {
       margin-bottom: 0;
     }
+
     &__desc {
       margin-bottom: 0px;
     }
+
     &__cost {
       font-size: 18px;
     }
   }
 }
+
 @media (max-width: 924px) {
   .product {
     &__card {
@@ -366,10 +433,11 @@ module.exports = {
       //overflow: auto;
 
       &:hover > &-action-menu > &Remove {
-        transform: translate(0px,123px);
+        transform: translate(0px, 123px);
         width: 50px;
         border-radius: 0;
       }
+
       //&:nth-child(3n) {
       //  margin-right: 0px;
       //}
@@ -381,50 +449,60 @@ module.exports = {
         height: 50px;
       }
     }
+
     &__cardRemove {
-      transform: translate(0px,123px);
+      transform: translate(0px, 123px);
       width: 50px;
       z-index: 10;
       background: #ffa8a8;
       border-radius: 0;
     }
+
     &__img {
       position: relative;
       padding: 0;
       max-width: 22%;
       max-height: 85%;
     }
+
     &__info {
       display: flex;
       padding: 20px 0 0 0;
       width: 100%;
       transform: translate(-32px, 0);
     }
+
     &__inner {
       height: 144px;
     }
+
     &__name {
       margin-bottom: 0;
     }
+
     &__desc {
       margin-bottom: 0px;
     }
+
     &__cost {
       font-size: 18px;
     }
   }
 }
-@media (max-width: 660px) {
-.product {
-  &__card {
 
+@media (max-width: 660px) {
+  .product {
+    &__card {
+
+    }
+
+    &__img {
+      max-height: 100%;
+    }
+
+    &__desc {
+      max-height: 70px;
+    }
   }
-  &__img {
-    max-height: 100%;
-  }
-  &__desc {
-    max-height: 70px;
-  }
-}
 }
 </style>
