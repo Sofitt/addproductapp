@@ -26,7 +26,7 @@
 <script>
 module.exports = {
   name: 'productCard',
-  props: ['cards', 'item'],
+  props: ['defaultCards' ,'cards', 'item'],
   data: function () {
     return {}
   },
@@ -36,14 +36,28 @@ module.exports = {
      */
     removeObj: function() {
       let arr = this.cards;
+      let defaultArr = this.defaultCards;
 
-      for (let card of this.cards) {
-        if (card.name === this.item.name) { // Можно расширить критерии поиска
-          const index = this.cards.indexOf(card);
+      for (let card of arr) {
+        if (card.index === this.item.index) {
+          const index = arr.indexOf(card);
 
           if (index >= 0) {
             this.cards = arr.splice(index, 1);
           } else if (index === -1) {
+            console.error('При удалении объекта произошла ошибка! Объект не найден.')
+          }
+          break
+        }
+      }
+
+      for (let card of defaultArr) {
+        if (card.index === this.item.index) {
+          const defaultIndex = defaultArr.indexOf(card);
+
+          if (defaultIndex >= 0) {
+            this.cards = defaultArr.splice(defaultIndex, 1);
+          } else if (defaultIndex === -1) {
             console.error('При удалении объекта произошла ошибка! Объект не найден.')
           }
           break
@@ -62,7 +76,6 @@ module.exports = {
         width = width.slice(0,3);
         const per = width/100*10;
         const half = width/2;
-            // console.log(width);
         for (let i = width; i >= 0; i = i - per) {
           setTimeout(() => {
             node.style.maxWidth = i + 'px';
@@ -86,7 +99,6 @@ module.exports = {
     },
   },
   mounted: function () {
-    console.log('product', this.cards);
 
   }
 }
@@ -151,8 +163,6 @@ module.exports = {
       flex: 0 1;
       flex-basis: 32px;
       width: 100%;
-      //align-items: flex-end;
-      //justify-content: flex-end;
     }
   }
 
@@ -226,21 +236,14 @@ module.exports = {
 
 }
 
-@media (max-width: 1601px) {
+@media (max-width: 1465px) {
   .product {
     &__card {
       width: 246.73px;
       max-height: 390.51px;
-      //overflow-y: auto;
-      //width: 24%;
-      //height: 32%;
       &:hover > &-action-menu > &Remove {
         transform: translate(190px, 10px);
       }
-
-      //&:nth-child(3n) {
-      //  margin-right: 16px;
-      //}
     }
 
     &__cardRemove {
@@ -248,9 +251,19 @@ module.exports = {
     }
 
     &__img {
-      min-height: 0;
+      min-height: 200px;
       max-width: 100%;
       max-height: 100%;
+    }
+  }
+}
+
+@media (min-width: 1155px) {
+  .product {
+    &__card {
+      &:nth-child(3n) {
+        margin-right: 0px;
+      }
     }
   }
 }
@@ -430,17 +443,12 @@ module.exports = {
       flex-flow: row;
       width: 100%;
       height: 155px;
-      //overflow: auto;
 
       &:hover > &-action-menu > &Remove {
         transform: translate(0px, 123px);
         width: 50px;
         border-radius: 0;
       }
-
-      //&:nth-child(3n) {
-      //  margin-right: 0px;
-      //}
       &-action-menu {
         flex-flow: row;
         display: block;
@@ -492,9 +500,6 @@ module.exports = {
 
 @media (max-width: 660px) {
   .product {
-    &__card {
-
-    }
 
     &__img {
       max-height: 100%;
@@ -503,6 +508,13 @@ module.exports = {
     &__desc {
       max-height: 70px;
     }
+  }
+}
+
+@media (max-width: 494px) {
+  .product__card {
+    max-width: 98%;
+    width: 98%;
   }
 }
 </style>
