@@ -42,7 +42,7 @@
 <script>
 module.exports = {
   name: 'addPanel',
-  props: ['cards'],
+  props: ['defaultCards' ,'cards'],
   data: function () {
     return {
       submitButton: '',
@@ -89,13 +89,13 @@ module.exports = {
      * Создаёт карточку товара, заполняя информацией из инпутов
      */
     createCard: function () {
-      let desc = document.querySelector('.textarea');
+      const index = this.defaultCards.length + 1;
       const name = this.inputs[0].value;
+      let desc = document.querySelector('.textarea');
       const link = this.inputs[1].value;
-      console.log(link);
       const cost = this.inputs[2].value;
-      this.cards.push({name: name, desc: desc.value, imgLink: link, cost: cost});
-      console.log(this.cards[1]);
+      this.cards.push({index: index, name: name, desc: desc.value, imgLink: link, cost: cost});
+      this.defaultCards.push({index: index, name: name, desc: desc.value, imgLink: link, cost: cost});
       this.inputs[0].value = '';
       this.inputs[1].value = '';
       this.inputs[2].value = '';
@@ -116,7 +116,6 @@ module.exports = {
   },
   watch: {
     cost: function () {
-      console.log(this.cost);
       let c = this.cost;
       c = c.split(' ');
       c = c.join('');
