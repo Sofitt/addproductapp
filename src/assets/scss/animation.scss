@@ -9,9 +9,9 @@ top: 0;
 }
 @keyframes hUp {
   from {
-    max-height: 0;
+    max-height: 0 !important;
   }
   to {
-    max-height: 2000px;
+    max-height: 423px !important;
   }
 }

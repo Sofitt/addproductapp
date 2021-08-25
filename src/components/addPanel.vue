@@ -2,8 +2,10 @@
   <form class="panel">
     <label class="panel__item">
       <span class="panel__name title">Наименование товара <i class="inputRequired"/></span>
-      <input class="panel__name input" type="text" name="name" placeholder="Введите наименование товара" required
-             @keydown.enter="isBlank" @keyup="isActive()" oninvalid="this.setCustomValidity(' ')"
+      <input class="panel__name input" type="text" name="name" placeholder="Введите наименование товара" required autocomplete="off"
+             @keydown.enter="isBlank"
+             @keyup="isActive()"
+             oninvalid="this.setCustomValidity(' ')"
              oninput="setCustomValidity('')">
     </label>
     <label class="panel__item">
@@ -13,21 +15,26 @@
     </label>
     <label class="panel__item">
       <span class="panel__link title">Ссылка на изображение товара <i class="inputRequired"/></span>
-      <input type="text" class="panel__link input" name="link" placeholder="Введите ссылку" required
-             @keydown.enter="isBlank" @keyup="isActive()" oninvalid="this.setCustomValidity(' ')"
+      <input type="text" class="panel__link input" name="link" placeholder="Введите ссылку" required autocomplete="off"
+             @keydown.enter="isBlank"
+             @keyup="isActive()"
+             oninvalid="this.setCustomValidity(' ')"
              oninput="setCustomValidity('')">
     </label>
     <label class="panel__item">
       <span class="panel__cost title">Цена товара <i class="inputRequired"/></span>
-      <input id="cost" type="text" class="panel__cost input" name="cost" placeholder="Введите цену" required
-             @keydown.enter="isBlank" @keyup="isActive()"
+      <input id="cost" type="text" class="panel__cost input" name="cost" placeholder="Введите цену" required autocomplete="off"
+             @keydown.enter="isBlank"
+             @keyup="isActive()"
              @input="$event.target.value = $event.target.value.replace(/[^\d,^\s]/g,''); cost = $event.target.value = $event.target.value.replace('+, -', '');"
              oninvalid="this.setCustomValidity(' ')"
              oninput="setCustomValidity('')">
     </label>
-    <button id="submit" class="panel__button" type="submit" @keydown.enter.prevent="isBlank"
+    <button disabled id="submit" class="panel__button" type="submit"
+            @keydown.enter.prevent="isBlank"
             @click.prevent="isBlank; createCard()"
-            oninvalid="this.setCustomValidity(' ')" oninput="setCustomValidity('')">
+            oninvalid="this.setCustomValidity(' ')"
+            oninput="setCustomValidity('')">
       Добавить товар
     </button>
   </form>
@@ -38,6 +45,7 @@ module.exports = {
   props: ['cards'],
   data: function () {
     return {
+      submitButton: '',
       inputs: '',
       cost: '',
     }
@@ -47,12 +55,9 @@ module.exports = {
      * Проверяет валидность полей с классом .input, если true - активирует кнопку с id #submit
      * */
     isActive: function () {
-      const submitButton = document.querySelector('#submit');
-      if (this.inputs[0].value.length && this.inputs[1].value.length && this.inputs[2].value.length) {
-        submitButton.classList.add('__active');
-      } else {
-        submitButton.classList.remove('__active');
-      }
+      this.submitButton.disabled = !(
+          this.inputs[0].value.length && this.inputs[1].value.length && this.inputs[2].value.length
+      );
     },
     /**
      * @EventListener
@@ -68,7 +73,7 @@ module.exports = {
           input.classList.add('__error');
           input.parentElement.insertAdjacentElement("beforeend", error);
         }
-        if (input.value && input.className !== '__error') {
+        if (this.submitButton.disabled === true && input.value && input.className !== '__error' || input.value && input.className !== '__error') {
           input.classList.remove('__error');
           if (input.nextSibling) input.nextSibling.remove();
         }
@@ -80,26 +85,34 @@ module.exports = {
       let cost = document.getElementById('cost');
       cost.value = value;
     },
+    /**
+     * Создаёт карточку товара, заполняя информацией из инпутов
+     */
     createCard: function () {
       let desc = document.querySelector('.textarea');
       const name = this.inputs[0].value;
-
-      const link = `<img class="product__img" src="` + this.inputs[1].value + `" alt="">`
+      const link = this.inputs[1].value;
       console.log(link);
       const cost = this.inputs[2].value;
-      this.cards.push({name: name, desc: desc.value, link: link, cost: cost});
+      this.cards.push({name: name, desc: desc.value, imgLink: link, cost: cost});
       console.log(this.cards[1]);
       this.inputs[0].value = '';
       this.inputs[1].value = '';
       this.inputs[2].value = '';
       desc.value = '';
+// Сброс состояния кнопки
+      this.submitButton.disabled = true;
     },
   },
   mounted: function () {
+
+
+    this.submitButton = document.querySelector('#submit');
     this.inputs = document.querySelectorAll('.input');
     let cost = document.getElementById('cost');
     this.cost = cost.value;
-    console.log(this.cost);
+
+
   },
   watch: {
     cost: function () {
@@ -167,26 +180,39 @@ module.exports = {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #EEEEEE;
-    color: rgba(180, 180, 180, 1);
     border-radius: 10px;
     height: 36px;
-    cursor: default;
+    background: rgba(123, 174, 115, 1);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 1);
     @include transitionAll();
 
-    &.__active {
-      background: rgba(123, 174, 115, 1);
-      color: rgba(255, 255, 255, 1);
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 15px;
+    /* identical to box height */
+
+    text-align: center;
+    letter-spacing: 0.04em;
+
+
+    &:hover {
+      background: rgb(88, 153, 77);
+      color: rgb(255, 255, 255);
+
       @include transitionAll();
+    }
 
-      &:hover {
-        background: rgb(88, 153, 77);
-        color: rgb(255, 255, 255);
-        border: 1px solid rgba(180, 180, 180, 1);
-        cursor: pointer;
+    &:disabled, &[disabled] {
+      background: #EEEEEE;
+      color: rgba(180, 180, 180, 1);
+      cursor: default;
+    }
 
-        @include transitionAll();
-      }
+    &.__active {
+
     }
   }
 }
@@ -286,4 +312,5 @@ module.exports = {
     padding-right: 5px;
   }
 }
+
 </style>
