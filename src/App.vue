@@ -94,7 +94,7 @@ export default {
       }
     },
   },
-mounted() {
+mounted() {//
   // this.$store.commit('parseLocal');
   console.log('GOVNO');
   console.log(this.$store.getters.defaultLength);
