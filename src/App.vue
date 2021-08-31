@@ -20,11 +20,10 @@
         </div>
       </header>
       <div class="product__main">
-
-        <addPanel :defaultCards="defaultCards" :cards="cards"></addPanel>
+        <addPanel></addPanel>
         <div class="product__list">
-          <span class="empty" v-if="!defaultCards[0]">Список пуст. Добавьте товар</span>
-          <productCard :defaultCards="defaultCards" :cards="cards" :item="item" :key="item" v-for="item in sortedCards"></productCard>
+          <span class="empty" v-if="defaultCardsLength === true">Список пуст. Добавьте товар</span>
+          <productCard :item="item" :key="item.id" v-for="item in sortedCards"></productCard>
         </div>
       </div>
 
@@ -33,6 +32,9 @@
 </template>
 
 <script>
+// import mapState from "vuex/dist/vuex.mjs";
+import {Sort} from './backend/Sort';
+
 import addPanel from './components/addPanel'
 import productCard from './components/productCard'
 
@@ -43,8 +45,6 @@ export default {
   },
   data: function () {
     return {
-      defaultCards: [],
-      cards: [],
       showSort: false,
       isShowSort: 'display: none',
       sortType: {name: 'По умолчанию', type: 'default'},
@@ -57,23 +57,34 @@ export default {
       this.showSort = !this.showSort;
     },
     toSort: function (type) {
-      if (type === 'default') {
-        this.sortType = {name: 'По умолчанию', type: 'default'};
-      } else if (type === 'toMax') {
-        this.sortType = {name: 'По возрастанию цены', type: 'toMax'};
-      } else if (type === 'toMin') {
-        this.sortType = {name: 'По убыванию цены', type: 'toMin'};
-      }
+      this.sortType = Sort.currentSort(type);
     }
   },
-  watch: {
-    defaultCards: function () {
-      const parsed = JSON.stringify(this.defaultCards);
-      localStorage.setItem('defaultCards', parsed);
-      console.log('Current cards', this.defaultCards)
+  computed: {
+    sortedCards: function () {
+      if (this.sortType.type === 'default') {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        // return this.$store.commit('parseLocal');
+        return this.$store.state.defaultCards;
+      }
+      if (this.sortType.type === 'toMax') {
+        return this.$store.commit('sortCards', Sort.toMaxCost);
+      }
+      if (this.sortType.type === 'toMin') {
+        return this.$store.commit('sortCards', Sort.toMinCost);
+      }
+      return 0
     },
-    cards: function () {
+    defaultCardsLength() {
+      return this.$store.getters.defaultLength === 0;
+    }
 
+  },
+  watch: {
+    // ...mapState['defaultCards'],
+    defaultCardsLength: function () {
+      this.$store.commit('updateLocal');
+      console.log('updated');
     },
     showSort: function (state) {
       if (state === true) {
@@ -83,57 +94,21 @@ export default {
       }
     },
   },
-  computed: {
-    sortedCards: function () {
-
-      if (this.sortType.type === 'default') {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.defaultCards = JSON.parse(localStorage.getItem('defaultCards'));
-      }
-      if (this.sortType.type === 'toMax') {
-        // eslint-disable-next-line no-inner-declarations
-        function compare(a, b) {
-          if (a.cost > b.cost) {
-                return 1
-              }
-              if (a.cost < b.cost) {
-                return -1
-              }
-        }
-
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.cards.sort(compare)
-      }
-      if (this.sortType.type === 'toMin') {
-        // eslint-disable-next-line no-inner-declarations
-        function compare(a, b) {
-          if (a.cost < b.cost) {
-            return 1
-          }
-          if (a.cost > b.cost) {
-            return -1
-          }
-        }
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.cards.sort(compare)
-      }
-      return 0
-    }
-
-  },
 mounted() {
-  if (localStorage.getItem('defaultCards')) {
-    try {
-      this.defaultCards = JSON.parse(localStorage.getItem('defaultCards'));
-    } catch (e) {
-      console.error('ERROR localStorage.getItem: ', e);
-      localStorage.removeItem('defaultCards');
+  // this.$store.commit('parseLocal');
+  console.log('GOVNO');
+  console.log(this.$store.getters.defaultLength);
+  // if (localStorage.getItem('defaultCards')) { // проблема
+  //   try {
+  //     this.$store.commit('parseLocal');
+  //   } catch (e) {
+  //     console.error('ERROR localStorage.getItem: ', e);
+  //     localStorage.removeItem('defaultCards');
+  //   }
+  //   this.$store.commit('toNull');
+    for (let item of this.$store.getters.defaultCards) {
+      this.$store.commit('add', item);
     }
-    this.cards = [];
-    for (let item of this.defaultCards) {
-      this.cards.push(item);
-    }
-  }
 }
 }
 

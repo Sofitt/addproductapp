@@ -13,20 +13,18 @@
         </h3>
         <p class="product__desc">
           {{ this.item.desc }}
-
         </p>
         <span class="product__cost"><span class="product__cost">
           {{ this.item.cost }}
-
         </span> руб.</span>
       </div>
     </div>
   </div>
 </template>
 <script>
-module.exports = {
+export default {
   name: 'productCard',
-  props: ['defaultCards' ,'cards', 'item'],
+  props: ['item'],
   data: function () {
     return {}
   },
@@ -35,15 +33,16 @@ module.exports = {
      * Удаляет объект их массива товаров
      */
     removeObj: function() {
-      let arr = this.cards;
-      let defaultArr = this.defaultCards;
+      let arr = this.$store.state.cards;
+      let defaultArr = this.$store.state.defaultCards;
 
       for (let card of arr) {
         if (card.index === this.item.index) {
           const index = arr.indexOf(card);
 
           if (index >= 0) {
-            this.cards = arr.splice(index, 1);
+            // this.cards = arr.splice(index, 1);
+            this.$store.commit('removeCard', index, 'cards');
           } else if (index === -1) {
             console.error('При удалении объекта произошла ошибка! Объект не найден.')
           }
@@ -56,7 +55,8 @@ module.exports = {
           const defaultIndex = defaultArr.indexOf(card);
 
           if (defaultIndex >= 0) {
-            this.cards = defaultArr.splice(defaultIndex, 1);
+            // this.cards = defaultArr.splice(defaultIndex, 1);
+            this.$store.commit('removeCard', defaultIndex, 'defaultCards');
           } else if (defaultIndex === -1) {
             console.error('При удалении объекта произошла ошибка! Объект не найден.')
           }

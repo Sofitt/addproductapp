@@ -2,30 +2,33 @@
   <form class="panel">
     <label class="panel__item">
       <span class="panel__name title">Наименование товара <i class="inputRequired"/></span>
-      <input class="panel__name input" type="text" name="name" placeholder="Введите наименование товара" required autocomplete="off"
+      <input class="panel__name input" v-model="name" type="text" name="name" placeholder="Введите наименование товара"
+             required autocomplete="off"
              @keydown.enter="isBlank"
-             @keyup="isActive()"
+             @keyup="isValid()"
              oninvalid="this.setCustomValidity(' ')"
              oninput="setCustomValidity('')">
     </label>
     <label class="panel__item">
       <span class="panel__desc title">Описание товара</span>
-      <textarea cols="30" rows="10" class="panel__desc textarea" name="desc"
+      <textarea cols="30" rows="10" class="panel__desc textarea" v-model="desc" name="desc"
                 placeholder="Введите описание товара"></textarea>
     </label>
     <label class="panel__item">
       <span class="panel__link title">Ссылка на изображение товара <i class="inputRequired"/></span>
-      <input type="text" class="panel__link input" name="link" placeholder="Введите ссылку" required autocomplete="off"
+      <input type="text" class="panel__link input" v-model="imgLink" name="link" placeholder="Введите ссылку" required
+             autocomplete="off"
              @keydown.enter="isBlank"
-             @keyup="isActive()"
+             @keyup="isValid()"
              oninvalid="this.setCustomValidity(' ')"
              oninput="setCustomValidity('')">
     </label>
     <label class="panel__item">
       <span class="panel__cost title">Цена товара <i class="inputRequired"/></span>
-      <input id="cost" type="text" class="panel__cost input" name="cost" placeholder="Введите цену" required autocomplete="off"
+      <input id="cost" type="text" class="panel__cost input" v-model="cost" name="cost" placeholder="Введите цену"
+             required autocomplete="off"
              @keydown.enter="isBlank"
-             @keyup="isActive()"
+             @keyup="isValid()"
              @input="$event.target.value = $event.target.value.replace(/[^\d,^\s]/g,''); cost = $event.target.value = $event.target.value.replace('+, -', '');"
              oninvalid="this.setCustomValidity(' ')"
              oninput="setCustomValidity('')">
@@ -40,108 +43,64 @@
   </form>
 </template>
 <script>
-module.exports = {
+import { inputValidator } from '../backend/inputValidator';
+import { priceMask } from '../backend/priceMask';
+
+export default {
   name: 'addPanel',
-  props: ['defaultCards' ,'cards'],
   data: function () {
     return {
+      // Elems
       submitButton: '',
       inputs: '',
+      // Item
+      name: '',
+      desc: '',
+      imgLink: '',
       cost: '',
     }
   },
   methods: {
     /**
-     * Проверяет валидность полей с классом .input, если true - активирует кнопку с id #submit
+     * Проверяет валидность полей, если true - активирует кнопку
      * */
-    isActive: function () {
-      this.submitButton.disabled = !(
-          this.inputs[0].value.length && this.inputs[1].value.length && this.inputs[2].value.length
-      );
+    isValid: function () {
+      inputValidator.isValid(this.inputs, this.submitButton)
     },
     /**
-     * @EventListener
-     * @Обязательно наличие класса input
      * При вызове проверяет наличие в поле символов, если false, окрашивает границы поля в красный и выводит сообщение об ошибке.
      */
     isBlank: function () {
-      for (let input of this.inputs) {
-        let error = document.createElement('span');
-        error.className = 'requireErr';
-        error.innerHTML = 'Поле является обязательным';
-        if (!input.value && input.className !== '__error' && !input.nextSibling) {
-          input.classList.add('__error');
-          input.parentElement.insertAdjacentElement("beforeend", error);
-        }
-        if (this.submitButton.disabled === true && input.value && input.className !== '__error' || input.value && input.className !== '__error') {
-          input.classList.remove('__error');
-          if (input.nextSibling) input.nextSibling.remove();
-        }
-        this.isActive();
-      }
+      inputValidator.isBlank(this.inputs, this.submitButton)
     },
 
-    isCost: function (value) {
-      let cost = document.getElementById('cost');
-      cost.value = value;
-    },
     /**
      * Создаёт карточку товара, заполняя информацией из инпутов
      */
     createCard: function () {
-      const index = this.defaultCards.length + 1;
-      const name = this.inputs[0].value;
-      let desc = document.querySelector('.textarea');
-      const link = this.inputs[1].value;
-      const cost = this.inputs[2].value;
-      this.cards.push({index: index, name: name, desc: desc.value, imgLink: link, cost: cost});
-      this.defaultCards.push({index: index, name: name, desc: desc.value, imgLink: link, cost: cost});
-      this.inputs[0].value = '';
-      this.inputs[1].value = '';
-      this.inputs[2].value = '';
-      desc.value = '';
-// Сброс состояния кнопки
+      const index = this.$store.getters.defaultLength + 1;
+
+      this.$store.commit('addAll', {
+        index: index,
+        name: this.name,
+        desc: this.desc,
+        imgLink: this.imgLink,
+        cost: this.cost
+      });
+      // console.log(this.name, this.desc, this.imgLink, this.cost);
+
+      // Сброс значений
+      this.name = this.desc = this.imgLink = this.cost = '';
       this.submitButton.disabled = true;
     },
   },
   mounted: function () {
-
-
     this.submitButton = document.querySelector('#submit');
     this.inputs = document.querySelectorAll('.input');
-    let cost = document.getElementById('cost');
-    this.cost = cost.value;
-
-
   },
   watch: {
     cost: function () {
-      let c = this.cost;
-      c = c.split(' ');
-      c = c.join('');
-      let l = c.length;
-      if (l === 4) {
-        c = c.slice(0, 1) + ' ' + c.slice(1);
-      } else if (l === 5) {
-        c = c.slice(0, 2) + ' ' + c.slice(2);
-      } else if (l === 6) {
-        c = c.slice(0, 3) + ' ' + c.slice(3);
-      } else if (l === 7) {
-        c = c.slice(0, 1) + ' ' + c.slice(1, 4) + ' ' + c.slice(4);
-      } else if (l === 8) {
-        c = c.slice(0, 2) + ' ' + c.slice(2, 5) + ' ' + c.slice(5);
-      } else if (l === 9) {
-        c = c.slice(0, 3) + ' ' + c.slice(3, 6) + ' ' + c.slice(6);
-      } else if (l === 10) {
-        c = c.slice(0, 1) + ' ' + c.slice(1, 4) + ' ' + c.slice(4, 7) + ' ' + c.slice(7, 10);
-      } else if (l === 11) {
-        c = c.slice(0, 2) + ' ' + c.slice(2, 5) + ' ' + c.slice(5, 8) + ' ' + c.slice(8, 11);
-      } else if (l === 12) {
-        c = c.slice(0, 3) + ' ' + c.slice(3, 6) + ' ' + c.slice(6, 9) + ' ' + c.slice(9, 12);
-      } else if (l === 13) {
-        c = c.slice(0, 1) + ' ' + c.slice(1, 4) + ' ' + c.slice(4, 7) + ' ' + c.slice(7, 10) + ' ' + c.slice(10);
-      }
-      this.isCost(c);
+      this.cost = priceMask(this.cost);
     }
   },
 }
