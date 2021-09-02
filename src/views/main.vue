@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import addPanel from "@/components/addPanel";
-import productCard from "@/components/productCard";
+import addPanel from "@/components/main/addPanel";
+import productCard from "@/components/main/productCard";
 import {Sort} from "@/backend/Sort";
 
 export default {

@@ -101,9 +101,6 @@ export default {
         },
     },
     actions: {
-        sortArr(ctx, func) {
-            return ctx.commit('sortCards', func);
-        },
         async remove(ctx, value) {
             await ctx.commit('removeCard', value);
         }

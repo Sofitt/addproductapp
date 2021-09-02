@@ -43,8 +43,8 @@
   </form>
 </template>
 <script>
-import { inputValidator } from '../backend/inputValidator';
-import { priceMask } from '../backend/priceMask';
+import { inputValidator } from '@/backend/inputValidator';
+import { priceMask } from '@/backend/priceMask';
 
 export default {
   name: 'addPanel',
@@ -108,8 +108,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "../assets/scss/style";
-@import "../assets/scss/icon";
+@import "../../assets/scss/style";
+@import "../../assets/scss/icon";
 
 .panel {
   display: flex;
