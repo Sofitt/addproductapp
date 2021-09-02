@@ -20,12 +20,13 @@
         </div>
       </header>
       <div class="product__main">
+        <addPanel></addPanel>
+        <transition-group name="list-complete" class="product__list">
+          <span class="empty" v-if="defaultCardsLength === 0">Список пуст. Добавьте товар</span>
 
-        <addPanel :defaultCards="defaultCards" :cards="cards"></addPanel>
-        <div class="product__list">
-          <span class="empty" v-if="!defaultCards[0]">Список пуст. Добавьте товар</span>
-          <productCard :defaultCards="defaultCards" :cards="cards" :item="item" :key="item" v-for="item in sortedCards"></productCard>
-        </div>
+            <productCard class="list-complete-item" :item="item" :key="item.index" v-for="item in sortedCards"></productCard>
+          </transition-group>
+
       </div>
 
     </div>
@@ -33,6 +34,8 @@
 </template>
 
 <script>
+import {Sort} from './backend/Sort';
+
 import addPanel from './components/addPanel'
 import productCard from './components/productCard'
 
@@ -43,8 +46,6 @@ export default {
   },
   data: function () {
     return {
-      defaultCards: [],
-      cards: [],
       showSort: false,
       isShowSort: 'display: none',
       sortType: {name: 'По умолчанию', type: 'default'},
@@ -57,23 +58,49 @@ export default {
       this.showSort = !this.showSort;
     },
     toSort: function (type) {
-      if (type === 'default') {
-        this.sortType = {name: 'По умолчанию', type: 'default'};
-      } else if (type === 'toMax') {
-        this.sortType = {name: 'По возрастанию цены', type: 'toMax'};
-      } else if (type === 'toMin') {
-        this.sortType = {name: 'По убыванию цены', type: 'toMin'};
+      this.sortType = Sort.currentSort(type);
+    },
+    reCreateCards: function () {
+      this.$store.commit('toNull');
+      for (let item of this.defaultCards) {
+        this.$store.commit('addCard', {item: item, type: 'cards'});
       }
     }
   },
-  watch: {
-    defaultCards: function () {
-      const parsed = JSON.stringify(this.defaultCards);
-      localStorage.setItem('defaultCards', parsed);
-      console.log('Current cards', this.defaultCards)
+  computed: {
+    sortedCards: function () {
+      if (this.sortType.type === 'default') {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        // return this.$store.commit('parseLocal');
+        return this.defaultCards;
+      }
+      if (this.sortType.type === 'toMax') {
+        // this.$store.commit('sortCards', Sort.toMaxCost);
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        return this.cards.sort(Sort.toMaxCost)
+      }
+      if (this.sortType.type === 'toMin') {
+        // this.$store.commit('sortCards', Sort.toMinCost);
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        return this.cards.sort(Sort.toMinCost)
+      }
+      return 0
     },
-    cards: function () {
+    defaultCards() {
+      return this.$store.getters.defaultCards;
+    },
+    defaultCardsLength() {
+      return this.$store.getters.defaultLength;
+    },
+    cards() {
+      return this.$store.getters.cards;
+    },
 
+  },
+  watch: {
+    defaultCardsLength: function () {
+      this.$store.commit('updateLocalData');
+      // this.reCreateCards();
     },
     showSort: function (state) {
       if (state === true) {
@@ -83,57 +110,18 @@ export default {
       }
     },
   },
-  computed: {
-    sortedCards: function () {
-
-      if (this.sortType.type === 'default') {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.defaultCards = JSON.parse(localStorage.getItem('defaultCards'));
-      }
-      if (this.sortType.type === 'toMax') {
-        // eslint-disable-next-line no-inner-declarations
-        function compare(a, b) {
-          if (a.cost > b.cost) {
-                return 1
-              }
-              if (a.cost < b.cost) {
-                return -1
-              }
-        }
-
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.cards.sort(compare)
-      }
-      if (this.sortType.type === 'toMin') {
-        // eslint-disable-next-line no-inner-declarations
-        function compare(a, b) {
-          if (a.cost < b.cost) {
-            return 1
-          }
-          if (a.cost > b.cost) {
-            return -1
-          }
-        }
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        return this.cards.sort(compare)
-      }
-      return 0
-    }
-
-  },
-mounted() {
-  if (localStorage.getItem('defaultCards')) {
-    try {
-      this.defaultCards = JSON.parse(localStorage.getItem('defaultCards'));
-    } catch (e) {
-      console.error('ERROR localStorage.getItem: ', e);
-      localStorage.removeItem('defaultCards');
-    }
-    this.cards = [];
-    for (let item of this.defaultCards) {
-      this.cards.push(item);
-    }
-  }
+mounted() {//
+  // this.$store.commit('parseLocal');
+  console.log('GOVNO');
+  console.log(this.$store.getters.defaultLength);
+  // if (localStorage.getItem('defaultCards')) { // проблема
+  //   try {
+  //     this.$store.commit('parseLocal');
+  //   } catch (e) {
+  //     console.error('ERROR localStorage.getItem: ', e);
+  //     localStorage.removeItem('defaultCards');
+  //   }
+  this.reCreateCards()
 }
 }
 
@@ -145,6 +133,30 @@ mounted() {
 @import "assets/scss/style";
 @import "assets/scss/null";
 @import "assets/scss/container";
+
+// List Animation
+.list-complete-item {
+  transition: all 1s;
+}
+.list-complete-enter, .list-complete-leave-to {
+  opacity: 0;
+  transform: translateX(-300px);
+}
+.list-complete-leave-active {
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  right: 0;
+  transform: translateY(300px);
+
+  @media (max-width: 1283px) {
+    top: 0;
+    left: 0;
+    bottom: unset;
+    right: unset;
+    transform: translateY(0);
+  }
+}
 
 #app {
   background: rgba(255, 254, 251, 0.8);
@@ -302,6 +314,9 @@ mounted() {
       }
     }
   }
+}
+.empty {
+  position: absolute;
 }
 
 @media (max-width: 1283px) {
