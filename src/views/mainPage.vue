@@ -217,11 +217,6 @@ export default {
           align-items: center;
           padding: 0px 16px;
           color: #B4B4B4;
-
-          .expanded {
-            background: red;
-            font-size: 50px !important;
-          }
         }
 
       }
