@@ -1,3 +1,5 @@
+import {priceMask} from "@/backend/priceMask";
+
 export default {
     state() {
         return {
@@ -46,12 +48,28 @@ export default {
                 state.defaultCards = JSON.parse(localStorage.getItem('defaultCards'))
             }
         },
+        /**
+         * Убирает отступы между символами
+         * @param state
+         */
+        resetSpaces (state) {
+            state.cards.forEach((card) => card.cost = card.cost.replace(' ', ''))
+            state.cards.forEach((card) => console.log(card.cost))
+            console.log(state.cards);
+        },
 
         /**
          * @state cards
          * Сортирует карточки по функции*/
         sortCards(state, func) {
             return state.cards.sort(func);
+        },
+        /**
+         * Накладывает на значение маску priceMask
+         * @param state
+         */
+        setSpaces (state) {
+          state.cards.forEach((card) => card.cost = priceMask(card.cost));
         },
 
         /**
@@ -101,6 +119,11 @@ export default {
         },
     },
     actions: {
+        async sort (ctx, func) {
+            ctx.commit("resetSpaces");
+            ctx.commit('sortCards', func);
+            ctx.commit('setSpaces');
+        },
         async remove(ctx, value) {
             await ctx.commit('removeCard', value);
         }
