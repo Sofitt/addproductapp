@@ -2,7 +2,7 @@
   <div class="product__card">
     <div class="product__card-action-menu">
       <button id="action-menu__remove" type="submit" class="product__cardRemove" @click="removeObj();">
-        <img src="../assets/svg/removeTry.svg" alt="" class="remove">
+        <img src="../../assets/svg/removeTry.svg" alt="" class="remove">
       </button>
     </div>
     <div class="product__info">
@@ -37,37 +37,6 @@ export default {
       this.$store.dispatch('remove', this.item.index);
 
     },
-    /**
-     * Удаляет товар из списка
-     * @param target
-     */
-     removeProduct: async function (target) {
-      if (target.className === 'product__cardRemove' || target.className === 'remove') {
-        const node = target.parentNode.parentNode.parentNode;
-        let width = window.getComputedStyle(node).width;
-        width = width.slice(0, 3);
-        const per = width / 100 * 10;
-        const half = width / 2;
-        for (let i = width; i >= 0; i = i - per) {
-          setTimeout(() => {
-            node.style.maxWidth = i + 'px';
-            if (i <= half) {
-              node.childNodes[1].style = 'display: none';
-            }
-            if (i <= half / 4) {
-              node.style.marginRight = '0px';
-            }
-          }, 200)
-
-        }
-        setTimeout(() => {
-          node.remove();
-          // this.removeObj();
-        }, 1000)
-      } else {
-        console.error('EventListener расположен на неправильном элементе или указывает на неверный родитель: ', target)
-      }
-    },
   },
   computed: {
     defaultCards() {
@@ -83,7 +52,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "../assets/scss/style";
+@import "../../assets/scss/style";
 
 .product {
   &__card {
@@ -116,7 +85,6 @@ export default {
     }
 
     &Remove {
-      //display: none;
       position: relative;
       transform: translate(300px, -0px);
       background: rgba(0, 0, 0, 0);
@@ -271,7 +239,6 @@ export default {
     }
 
     &__inner {
-      //overflow-y: auto;
       max-height: 100%;
     }
 
@@ -296,10 +263,6 @@ export default {
         width: 50px;
         z-index: 10;
       }
-
-      //&:nth-child(3n) {
-      //  margin-right: 0px;
-      //}
       &-action-menu {
         flex-flow: row;
         display: block;
@@ -364,10 +327,6 @@ export default {
         transform: translate(480px, 118px);
         width: 50px;
       }
-
-      //&:nth-child(3n) {
-      //  margin-right: 0px;
-      //}
       &-action-menu {
         flex-flow: row;
         display: block;
