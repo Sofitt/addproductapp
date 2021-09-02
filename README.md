@@ -29,7 +29,7 @@
 npm install
 ```
 
-### Компилияция ждя разработки
+### Компилияция для разработки
 ```
 npm run serve
 open in browser http://localhost:8080
