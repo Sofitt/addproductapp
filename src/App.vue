@@ -21,10 +21,12 @@
       </header>
       <div class="product__main">
         <addPanel></addPanel>
-        <div class="product__list">
-          <span class="empty" v-if="defaultCardsLength === true">Список пуст. Добавьте товар</span>
-          <productCard :item="item" :key="item.id" v-for="item in sortedCards"></productCard>
-        </div>
+        <transition-group name="list-complete" class="product__list">
+          <span class="empty" v-if="defaultCardsLength === 0">Список пуст. Добавьте товар</span>
+
+            <productCard class="list-complete-item" :item="item" :key="item.index" v-for="item in sortedCards"></productCard>
+          </transition-group>
+
       </div>
 
     </div>
@@ -32,7 +34,6 @@
 </template>
 
 <script>
-// import mapState from "vuex/dist/vuex.mjs";
 import {Sort} from './backend/Sort';
 
 import addPanel from './components/addPanel'
@@ -58,6 +59,12 @@ export default {
     },
     toSort: function (type) {
       this.sortType = Sort.currentSort(type);
+    },
+    reCreateCards: function () {
+      this.$store.commit('toNull');
+      for (let item of this.defaultCards) {
+        this.$store.commit('addCard', {item: item, type: 'cards'});
+      }
     }
   },
   computed: {
@@ -65,26 +72,35 @@ export default {
       if (this.sortType.type === 'default') {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         // return this.$store.commit('parseLocal');
-        return this.$store.state.defaultCards;
+        return this.defaultCards;
       }
       if (this.sortType.type === 'toMax') {
-        return this.$store.commit('sortCards', Sort.toMaxCost);
+        // this.$store.commit('sortCards', Sort.toMaxCost);
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        return this.cards.sort(Sort.toMaxCost)
       }
       if (this.sortType.type === 'toMin') {
-        return this.$store.commit('sortCards', Sort.toMinCost);
+        // this.$store.commit('sortCards', Sort.toMinCost);
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        return this.cards.sort(Sort.toMinCost)
       }
       return 0
     },
+    defaultCards() {
+      return this.$store.getters.defaultCards;
+    },
     defaultCardsLength() {
-      return this.$store.getters.defaultLength === 0;
-    }
+      return this.$store.getters.defaultLength;
+    },
+    cards() {
+      return this.$store.getters.cards;
+    },
 
   },
   watch: {
-    // ...mapState['defaultCards'],
     defaultCardsLength: function () {
-      this.$store.commit('updateLocal');
-      console.log('updated');
+      this.$store.commit('updateLocalData');
+      // this.reCreateCards();
     },
     showSort: function (state) {
       if (state === true) {
@@ -105,10 +121,7 @@ mounted() {//
   //     console.error('ERROR localStorage.getItem: ', e);
   //     localStorage.removeItem('defaultCards');
   //   }
-  //   this.$store.commit('toNull');
-    for (let item of this.$store.getters.defaultCards) {
-      this.$store.commit('add', item);
-    }
+  this.reCreateCards()
 }
 }
 
@@ -120,6 +133,30 @@ mounted() {//
 @import "assets/scss/style";
 @import "assets/scss/null";
 @import "assets/scss/container";
+
+// List Animation
+.list-complete-item {
+  transition: all 1s;
+}
+.list-complete-enter, .list-complete-leave-to {
+  opacity: 0;
+  transform: translateX(-300px);
+}
+.list-complete-leave-active {
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  right: 0;
+  transform: translateY(300px);
+
+  @media (max-width: 1283px) {
+    top: 0;
+    left: 0;
+    bottom: unset;
+    right: unset;
+    transform: translateY(0);
+  }
+}
 
 #app {
   background: rgba(255, 254, 251, 0.8);
@@ -277,6 +314,9 @@ mounted() {//
       }
     }
   }
+}
+.empty {
+  position: absolute;
 }
 
 @media (max-width: 1283px) {

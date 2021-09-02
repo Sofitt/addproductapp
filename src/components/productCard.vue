@@ -1,7 +1,7 @@
 <template>
   <div class="product__card">
     <div class="product__card-action-menu">
-      <button id="action-menu__remove" type="submit" class="product__cardRemove" @click="removeProduct($event.target)">
+      <button id="action-menu__remove" type="submit" class="product__cardRemove" @click="removeObj();">
         <img src="../assets/svg/removeTry.svg" alt="" class="remove">
       </button>
     </div>
@@ -32,70 +32,49 @@ export default {
     /**
      * Удаляет объект их массива товаров
      */
-    removeObj: function() {
-      let arr = this.$store.state.cards;
-      let defaultArr = this.$store.state.defaultCards;
-
-      for (let card of arr) {
-        if (card.index === this.item.index) {
-          const index = arr.indexOf(card);
-
-          if (index >= 0) {
-            // this.cards = arr.splice(index, 1);
-            this.$store.commit('removeCard', index, 'cards');
-          } else if (index === -1) {
-            console.error('При удалении объекта произошла ошибка! Объект не найден.')
-          }
-          break
-        }
-      }
-
-      for (let card of defaultArr) {
-        if (card.index === this.item.index) {
-          const defaultIndex = defaultArr.indexOf(card);
-
-          if (defaultIndex >= 0) {
-            // this.cards = defaultArr.splice(defaultIndex, 1);
-            this.$store.commit('removeCard', defaultIndex, 'defaultCards');
-          } else if (defaultIndex === -1) {
-            console.error('При удалении объекта произошла ошибка! Объект не найден.')
-          }
-          break
-        }
-      }
+    removeObj: function () {
+      console.log('+');
+      this.$store.dispatch('remove', this.item.index);
 
     },
     /**
      * Удаляет товар из списка
      * @param target
      */
-    removeProduct: function (target) {
+     removeProduct: async function (target) {
       if (target.className === 'product__cardRemove' || target.className === 'remove') {
         const node = target.parentNode.parentNode.parentNode;
         let width = window.getComputedStyle(node).width;
-        width = width.slice(0,3);
-        const per = width/100*10;
-        const half = width/2;
+        width = width.slice(0, 3);
+        const per = width / 100 * 10;
+        const half = width / 2;
         for (let i = width; i >= 0; i = i - per) {
           setTimeout(() => {
             node.style.maxWidth = i + 'px';
             if (i <= half) {
               node.childNodes[1].style = 'display: none';
             }
-            if (i <= half/4) {
+            if (i <= half / 4) {
               node.style.marginRight = '0px';
             }
-          }, 20)
+          }, 200)
 
         }
         setTimeout(() => {
-          this.removeObj();
           node.remove();
-        }, 300)
-
+          // this.removeObj();
+        }, 1000)
       } else {
         console.error('EventListener расположен на неправильном элементе или указывает на неверный родитель: ', target)
       }
+    },
+  },
+  computed: {
+    defaultCards() {
+      return this.$store.getters.defaultCards;
+    },
+    cards() {
+      return this.$store.getters.cards;
     },
   },
   mounted: function () {
@@ -241,6 +220,7 @@ export default {
     &__card {
       width: 246.73px;
       max-height: 390.51px;
+
       &:hover > &-action-menu > &Remove {
         transform: translate(190px, 10px);
       }
@@ -449,6 +429,7 @@ export default {
         width: 50px;
         border-radius: 0;
       }
+
       &-action-menu {
         flex-flow: row;
         display: block;

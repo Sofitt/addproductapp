@@ -14,7 +14,7 @@ export class Sort {
         }
     }
 
-    toMaxCost (a, b) {
+    static toMaxCost (a, b) {
         if (a.cost > b.cost) {
             return 1
         }
@@ -22,7 +22,7 @@ export class Sort {
             return -1
         }
     }
-    toMinCost (a, b) {
+    static toMinCost (a, b) {
         if (a.cost < b.cost) {
             return 1
         }
