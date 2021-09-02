@@ -15,19 +15,9 @@ export class Sort {
     }
 
     static toMaxCost (a, b) {
-        if (a.cost > b.cost) {
-            return 1
-        }
-        if (a.cost < b.cost) {
-            return -1
-        }
+        return a.cost-b.cost;
     }
     static toMinCost (a, b) {
-        if (a.cost < b.cost) {
-            return 1
-        }
-        if (a.cost > b.cost) {
-            return -1
-        }
+        return b.cost-a.cost;
     }
 }

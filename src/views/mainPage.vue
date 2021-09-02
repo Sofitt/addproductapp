@@ -3,7 +3,7 @@
     <header class="product">
       <h1 class="product__title">Добавление товара</h1>
       <div id="sortList" class="product__sort" @click="expand()">
-        <a class="product__sortBtn __current" v-if="showSort === false">
+        <a class="product__sortBtn __current" :style="wider" v-if="showSort === false">
           {{ sortType.name }}
           <i id="arrow" class="arrow down"></i>
         </a>
@@ -38,7 +38,7 @@ import productCard from "@/components/main/productCard";
 import {Sort} from "@/backend/Sort";
 
 export default {
-  name: "main",
+  name: "mainPage",
   components: {
     addPanel, productCard,
   },
@@ -46,6 +46,7 @@ export default {
     return {
       showSort: false,
       isShowSort: 'display: none',
+      wider: '',
       sortType: {name: 'По умолчанию', type: 'default'},
     }
   },
@@ -71,11 +72,11 @@ export default {
         return this.defaultCards;
       }
       if (this.sortType.type === 'toMax') {
-        this.$store.commit('sortCards', Sort.toMaxCost);
+        this.$store.dispatch('sort', Sort.toMaxCost);
         return this.cards
       }
       if (this.sortType.type === 'toMin') {
-        this.$store.commit('sortCards', Sort.toMinCost);
+        this.$store.dispatch('sort', Sort.toMinCost);
         return this.cards
       }
       return 0
@@ -102,6 +103,13 @@ export default {
         this.isShowSort = 'display: none';
       }
     },
+    sortType: function () {
+      if (this.sortType.type === 'toMax') {
+        this.wider = 'padding: 0 10px !important;';
+      } else {
+        this.wider = '';
+      }
+    }
   },
   mounted() {
     this.reCreateCards()
@@ -209,6 +217,11 @@ export default {
           align-items: center;
           padding: 0px 16px;
           color: #B4B4B4;
+
+          .expanded {
+            background: red;
+            font-size: 50px !important;
+          }
         }
 
       }
