@@ -1,17 +1,35 @@
 # addproductapp
+Список товаров с функцией добавления новых.
 
-## Project setup
+## Функции
+- Добавление товара (анимировано) => Поля с обязательной валидацией и подсцветкой незаполненных полей.
+- Удаление товара (анимировано)
+- Сортировка товара по умолчанию / возрастанию цены / убыванию цены (анимировано)
+
+## Использованные технологии
+- Vue 2.6
+- Vuex
+- Vue Router
+- Babel
+- Scss
+- Чистый JS
+
+## Примечание
+- Страница полностью адаптивна ()
+
+# Установка проекта
+
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Компилияция ждя разработки
 ```
 npm run serve
-then open in browser http://localhost:8080
+open in browser http://localhost:8080
 ```
 
-### Compiles and minifies for production
+### Компиляция для продакшена
 ```
 npm run build
 ```
@@ -21,5 +39,3 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
