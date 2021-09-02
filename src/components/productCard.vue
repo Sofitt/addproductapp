@@ -116,7 +116,6 @@ export default {
     }
 
     &Remove {
-      //display: none;
       position: relative;
       transform: translate(300px, -0px);
       background: rgba(0, 0, 0, 0);
@@ -271,7 +270,6 @@ export default {
     }
 
     &__inner {
-      //overflow-y: auto;
       max-height: 100%;
     }
 
@@ -296,10 +294,6 @@ export default {
         width: 50px;
         z-index: 10;
       }
-
-      //&:nth-child(3n) {
-      //  margin-right: 0px;
-      //}
       &-action-menu {
         flex-flow: row;
         display: block;
@@ -364,10 +358,6 @@ export default {
         transform: translate(480px, 118px);
         width: 50px;
       }
-
-      //&:nth-child(3n) {
-      //  margin-right: 0px;
-      //}
       &-action-menu {
         flex-flow: row;
         display: block;
