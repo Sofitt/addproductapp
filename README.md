@@ -15,7 +15,13 @@
 - Чистый JS
 
 ## Примечание
-- Страница полностью адаптивна ()
+- Страница полностью адаптивна
+
+## Изображения приложения
+![1](https://user-images.githubusercontent.com/81359836/131902754-761c9156-e285-49eb-9b1c-a7c5e6e0097b.JPG)
+![2](https://user-images.githubusercontent.com/81359836/131902756-42098aac-e6c2-4fe6-ae8c-00dd689b2c33.JPG)
+![3](https://user-images.githubusercontent.com/81359836/131902759-caa17377-d960-4751-a748-82a9574a317b.JPG)
+![4](https://user-images.githubusercontent.com/81359836/131902751-cba4a7a3-8ce5-4668-a103-d8183fc1b3af.JPG)
 
 # Установка проекта
 
