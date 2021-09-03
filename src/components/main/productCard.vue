@@ -6,7 +6,8 @@
       </button>
     </div>
     <div class="product__info">
-      <img class="product__img" :src="this.item.imgLink" alt="Изображение товара">
+      <img class="product__img" :src="this.item.imgLink" onerror="this.onerror=null; this.src='https://content2.rozetka.com.ua/goods/images/big/44928638.jpg'" alt="Изображение товара">
+<!--      <img class="product__img" src="" alt="">-->
       <div class="product__inner">
         <h3 class="product__name">
           {{ this.item.name }}
