@@ -78,7 +78,7 @@ export default {
      * Создаёт карточку товара, заполняя информацией из инпутов
      */
     createCard: function () {
-      const index = this.$store.getters.defaultLength + 1;
+      const index = this.$store.getters.defaultLastCard + 1;
 
       this.$store.commit('addCard', {
         item: {
