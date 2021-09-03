@@ -114,6 +114,12 @@ export default {
         defaultLength(state) {
             return state.defaultCards.length;
         },
+        defaultLastCard(state) {
+            if (state.defaultCards.length !== 0) {
+                return state.defaultCards[state.defaultCards.length-1].index;
+            } else return 0
+
+        },
         cards(state) {
             return state.cards;
         },
