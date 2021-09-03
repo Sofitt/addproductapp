@@ -18,10 +18,11 @@
 - Страница полностью адаптивна
 
 ## Изображения приложения
-![1](https://user-images.githubusercontent.com/81359836/131902754-761c9156-e285-49eb-9b1c-a7c5e6e0097b.JPG)
-![2](https://user-images.githubusercontent.com/81359836/131902756-42098aac-e6c2-4fe6-ae8c-00dd689b2c33.JPG)
-![3](https://user-images.githubusercontent.com/81359836/131902759-caa17377-d960-4751-a748-82a9574a317b.JPG)
-![4](https://user-images.githubusercontent.com/81359836/131902751-cba4a7a3-8ce5-4668-a103-d8183fc1b3af.JPG)
+![1](https://user-images.githubusercontent.com/81359836/131997336-1a08f0c8-e864-4be7-81b2-6c58f738f6ee.JPG)
+![2](https://user-images.githubusercontent.com/81359836/131997341-6ff93741-bd15-4052-8085-e457f7be2b09.JPG)
+![3](https://user-images.githubusercontent.com/81359836/131997344-6cd7aca1-ad44-42de-b847-6b7ea8af9318.JPG)
+![4](https://user-images.githubusercontent.com/81359836/131997331-7fde81ec-8034-4647-89d6-3bc8377bb386.JPG)
+
 
 # Установка проекта
 
